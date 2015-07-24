@@ -12,9 +12,15 @@ exports.load = function(req, res, next, quizId) {
 };
 
 exports.index = function(req, res) {
-	models.Quiz.findAll().then(function(quizes) {
-		res.render('quizes/index.ejs', {quizes: quizes});
-	})
+	if(req.query.search){
+		var search = '%' + req.query.search.replace(/ /g,'%') + '%';
+		models.Quiz.findAll({where: ["pregunta like ?", search]}).then(function(quizes){
+			res.render('quizes/index.ejs', {quizes: quizes});
+		})
+	} else {
+		models.Quiz.findAll().then(function(quizes) {
+			res.render('quizes/index.ejs', {quizes: quizes});
+	})}
 };
 
 exports.show = function(req,res) {
