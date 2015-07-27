@@ -20,7 +20,8 @@ exports.index = function(req, res) {
 	} else {
 		models.Quiz.findAll().then(function(quizes) {
 			res.render('quizes/index.ejs', {quizes: quizes, errors: []});
-	})}
+	}).catch(function(error){next(error)});
+	}
 };
 
 exports.show = function(req,res) {
@@ -31,7 +32,7 @@ exports.show = function(req,res) {
 
 exports.answer = function(req,res) {
 	models.Quiz.find(req.params.quizId).then(function(quiz) {
-		if (req.query.respuesta === req.quiz.respuesta) {
+		if (req.query.respuesta.toUpperCase() === req.quiz.respuesta.toUpperCase()) {
 			res.render('quizes/answer', { quiz: req.quiz, respuesta: 'Correcto', errors: []});
 		} else {
 			res.render('quizes/answer', { quiz: req.quiz, respuesta: 'Incorrecto', errors: []});
@@ -63,3 +64,25 @@ exports.create = function(req,res) {
 	);
 };
 
+exports.edit = function(req, res) {
+	var quiz = req.quiz;
+	res.render('quizes/edit', {quiz: quiz, errors: []});
+};
+
+exports.update = function(req, res) {
+	req.quiz.pregunta = req.body.quiz.pregunta;
+	req.quiz.respuesta = req.body.quiz.respuesta;
+	
+	req.quiz
+	.validate()
+	.then(
+		function(err){
+			if(err){
+				res.render('quizes/edit', {quiz: req.quiz, errors: err.errors});
+			} else {
+				req.quiz
+				.save({fields: ["pregunta", "respuesta"]})
+				.then(function(){ res.redirect('/quizes');});
+			}
+		});
+};
