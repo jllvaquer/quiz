@@ -27,7 +27,7 @@ exports.create = function(req,res) {
 		
 		req.session.user = { id: user.id, username: user.username};
 		var now = new Date();
-		req.session.user.limitTime = new Date(now.getTime() + 12000);
+		req.session.user.limitTime = new Date(now.getTime() + 120000);
 		req.session.cookie.expires = req.session.user.limitTime;
 		res.redirect(req.session.redir.toString());
 	});

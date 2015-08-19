@@ -37,7 +37,7 @@ app.use(function(req, res, next){
 	if(req.session.user){
 		var now = new Date();
 		if(req.session.user.limitTime < now){
-			req.session.user.limitTime = new Date(now.getTime() + 12000);
+			req.session.user.limitTime = new Date(now.getTime() + 120000);
 			req.session.cookie.expires = req.session.user.limitTime;
 		}
 	}
