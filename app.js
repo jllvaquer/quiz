@@ -34,7 +34,13 @@ app.use(function(req, res, next){
 	if(!req.path.match(/\/login|\/logout/)) {
 		req.session.redir = req.path;
 	}
-	
+	if(req.session.user){
+		var now = new Date();
+		if(req.session.user.limitTime < now){
+			req.session.user.limitTime = new Date(now.getTime() + 12000);
+			req.session.cookie.expires = req.session.user.limitTime;
+		}
+	}
 	res.locals.session = req.session;
 	next();
 });
